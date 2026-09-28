@@ -2,59 +2,265 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Site</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ténéré 700 — Maintenance by Odometer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0f0f10;
-    --fg: #f5f5f5;
-    --accent: #4f8cff;
-    --muted: #a0a0a0;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--fg);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 2rem;
-  }
-  h1 {
-    font-size: clamp(2rem, 6vw, 3.5rem);
-    margin-bottom: 0.5rem;
-  }
-  p {
-    color: var(--muted);
-    max-width: 32rem;
-    line-height: 1.5;
-  }
-  a.button {
-    display: inline-block;
-    margin-top: 1.5rem;
-    padding: 0.75rem 1.5rem;
-    background: var(--accent);
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-  }
-  footer {
-    margin-top: 3rem;
-    font-size: 0.85rem;
-    color: var(--muted);
-  }
+:root{
+  --bg:#15130F; --panel:#1C1912; --line:#39331F; --line-soft:#2A2519;
+  --sand:#ECE2CB; --sand-dim:#AFA48A; --sand-faint:#7A7160;
+  --rust:#C6551C; --amber:#DDA23E; --steel:#7E93A8;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;background:var(--bg);color:var(--sand);font-family:'Inter',sans-serif;}
+.wrap{max-width:840px;margin:0 auto;padding:28px 18px 70px;}
+h1,h2,h3{font-family:'Rajdhani',sans-serif;margin:0;}
+.mono{font-family:'Space Mono',monospace;}
+
+header{border-bottom:1px solid var(--line);padding-bottom:20px;}
+header .tag{font-size:12px;color:var(--rust);text-transform:uppercase;letter-spacing:0.14em;font-weight:600;}
+header h1{font-size:28px;margin-top:6px;}
+header p{color:var(--sand-dim);font-size:13.5px;margin-top:6px;max-width:62ch;line-height:1.5;}
+
+.sticky-note{
+  margin-top:18px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--rust);
+  padding:10px 14px;font-size:13px;color:var(--sand-dim);
+}
+.sticky-note b{color:var(--sand);}
+
+.finder{margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--sand-faint);}
+.finder input{
+  background:var(--panel);border:1px solid var(--line);color:var(--sand);
+  font-family:'Space Mono',monospace;font-size:14px;padding:7px 10px;width:120px;border-radius:2px;
+}
+.finder input:focus{outline:none;border-color:var(--rust);}
+.finder .result{color:var(--amber);font-weight:600;}
+
+/* ---- Tabs ---- */
+.tabs{display:flex;gap:1px;margin-top:20px;background:var(--line);border:1px solid var(--line);overflow-x:auto;}
+.tab{
+  flex:1;min-width:88px;text-align:center;padding:12px 6px;background:var(--panel);
+  cursor:pointer;border:none;color:var(--sand-dim);font-family:'Space Mono',monospace;font-size:13px;
+}
+.tab .n{font-size:15px;font-weight:700;display:block;color:var(--sand);}
+.tab.active{background:var(--rust);}
+.tab.active .n, .tab.active{color:#1A0D05;}
+.tab .l{font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;}
+
+.tab-panel{margin-top:2px;}
+.tab-note{font-size:12px;color:var(--sand-faint);padding:12px 2px 0;}
+
+.group{margin-top:22px;}
+.group h3{font-size:14px;color:var(--sand-dim);border-bottom:1px solid var(--line-soft);padding-bottom:7px;text-transform:uppercase;letter-spacing:.06em;font-family:'Inter';font-weight:600;}
+.row{border-bottom:1px solid var(--line-soft);padding:12px 0;display:flex;gap:12px;align-items:flex-start;}
+.row .main{flex:1;min-width:0;}
+.row .name{font-size:14.5px;font-weight:600;}
+.row .action{font-size:12.5px;color:var(--sand-dim);margin-top:2px;line-height:1.4;}
+.row .meta{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center;font-size:11px;color:var(--sand-faint);}
+.diffbar{display:inline-flex;gap:1.5px;}
+.diffbar span{width:5px;height:8px;background:var(--line-soft);display:inline-block;}
+.diffbar span.on{background:var(--rust);}
+.tag-dealer{border:1px solid #33465A;color:var(--steel);border-radius:20px;padding:1px 7px;}
+.row .right{text-align:right;flex:none;min-width:88px;font-size:10.5px;color:var(--rust);}
+
+/* ---- Long-interval / calendar panels ---- */
+.panel{margin-top:34px;}
+.panel h2{font-size:16px;color:var(--sand-dim);border-bottom:1px solid var(--line);padding-bottom:8px;}
+.panel .sub{font-size:12px;color:var(--sand-faint);margin-top:6px;margin-bottom:8px;}
+.prow{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line-soft);font-size:13px;flex-wrap:wrap;}
+.prow .cn{font-weight:600;}
+.prow .ci{color:var(--sand-faint);font-size:12px;}
+.prow .cp{color:var(--rust);font-size:11px;white-space:nowrap;}
+
+footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);color:var(--sand-faint);font-size:11px;line-height:1.7;}
 </style>
 </head>
 <body>
-  <h1>Hello, World 👋</h1>
-  <p>This is a starter page. Edit <code>index.html</code> to make it yours, then push to GitHub to see changes go live.</p>
-  <a class="button" href="https://github.com" target="_blank" rel="noopener">Visit GitHub</a>
-  <footer>Built with plain HTML &mdash; hosted on GitHub Pages</footer>
+<div class="wrap">
+  <header>
+    <div class="tag">Maintenance by Odometer</div>
+    <h1>Yamaha Ténéré 700</h1>
+    <p>Straight from the service manual's own Periodic Maintenance chart (Ch. 3). Pick the km mark closest to where you are — each tab is exactly what's due at that point.</p>
+  </header>
+
+  <div class="sticky-note">🔗 <b>Drive chain</b> — check slack/condition, adjust &amp; lube every <b>1,000 km</b>, and again after riding in rain or washing the bike. This one's too frequent to live in a single tab — do it on its own clock. <span style="color:var(--rust)">p.3-19–3-20 · PDF 130–131</span></div>
+
+  <div class="finder">
+    <label>Not on a round number? Enter your km:</label>
+    <input type="number" id="finderInput" inputmode="numeric" placeholder="e.g. 45000">
+    <span class="result" id="finderResult"></span>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div class="tab-note" id="tabNote"></div>
+  <div class="tab-panel" id="tabPanel"></div>
+
+  <div class="panel">
+    <h2>Long-interval items (their own cycle, not tied to the tabs above)</h2>
+    <div class="sub">These recur on their own fixed distance — first due at the km shown, then every that-many km again.</div>
+    <div id="longList"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Calendar-only (no odometer trigger at all)</h2>
+    <div class="sub">Track these by date in your log — distance doesn't drive them.</div>
+    <div id="calList"></div>
+  </div>
+
+  <footer>
+    Source: 2024 Yamaha Ténéré 700 Service Manual (LIT-11616-MC-B0), Ch. 3 — Periodic Maintenance. Tabs mirror the manual's own odometer columns: 1,000 km is the initial service; from 31,000 km onward the identical checklist pattern repeats every 6,000 km (per the manual's own note), so the 13,000 km tab's list is also what's due at 37,000 km, 43,000 km, and so on — the km-finder above works this out for any number you type. "p." = printed manual page; "PDF" = page number in the scanned file (Ch.3 = printed + 111, Ch.4 = printed + 147; Ch.8 cross-refs shown as printed page only).
+  </footer>
+</div>
+
+<script>
+// tabs: which of [1000,7000,13000,19000,25000,31000] this item is due at
+const ITEMS = [
+{cat:'Engine',name:'Diagnostic system check',action:'Dynamic inspection with the Yamaha diagnostic tool; check DTCs.',tabs:[1000,7000,13000,19000,25000,31000],diff:5,dealer:true,page:'3-4',pdf:'115'},
+{cat:'Engine',name:'Fuel line',action:'Check fuel hoses for cracks or damage; replace if necessary.',tabs:[7000,13000,19000,25000,31000],diff:2,dealer:true,page:'3-4',pdf:'115'},
+{cat:'Engine',name:'Spark plugs — inspect & clean',action:'Check condition; adjust gap and clean.',tabs:[7000,19000,31000],diff:2,dealer:true,page:'3-5–3-6',pdf:'116–117',notes:'NGK LMAR8A-9, gap 0.8–0.9 mm.'},
+{cat:'Engine',name:'Spark plugs — replace',action:'Replace the spark plugs.',tabs:[13000,25000],diff:3,dealer:true,page:'3-5–3-6',pdf:'116–117',notes:'Torque 13 N·m.'},
+{cat:'Engine',name:'Crankcase breather system',action:'Check breather hose for cracks/damage; replace if necessary.',tabs:[7000,13000,19000,25000,31000],diff:2,dealer:true,page:'3-11',pdf:'122'},
+{cat:'Engine',name:'Fuel injection sync',action:'Adjust throttle body synchronization.',tabs:[1000,7000,13000,19000,25000,31000],diff:5,dealer:true,page:'3-9–3-10',pdf:'120–121',notes:'Needs diagnostic tool + vacuum gauges.'},
+{cat:'Engine',name:'Exhaust system',action:'Check for leakage; tighten or replace gaskets if necessary.',tabs:[1000,7000,13000,19000,25000,31000],diff:2,dealer:true,page:'3-11',pdf:'122'},
+{cat:'Engine',name:'Evaporative emission control',action:'Check canister & purge-cut valve solenoid for damage.',tabs:[19000,31000],diff:4,dealer:true,page:'3-12',pdf:'123'},
+{cat:'Engine',name:'Air filter check hose',action:'Clean the air-filter case drain hose.',tabs:[7000,13000,19000,25000,31000],diff:2,dealer:false,page:'3-12',pdf:'123'},
+{cat:'Engine',name:'Engine oil',action:'Change the engine oil (warm engine first).',tabs:[1000,7000,13000,19000,25000,31000],diff:2,dealer:false,page:'3-25–3-26',pdf:'136–137',notes:'Yamalube 10W-40/50 etc. 2.30 L (2.60 L w/filter).'},
+{cat:'Engine',name:'Engine oil filter cartridge',action:'Replace the oil filter cartridge.',tabs:[1000,13000,25000],diff:2,dealer:false,page:'3-26',pdf:'137',notes:'Torque 17 N·m.'},
+{cat:'Cooling',name:'Cooling system',action:'Check coolant level and vehicle for leakage.',tabs:[7000,13000,19000,25000,31000],diff:1,dealer:true,page:'3-28',pdf:'139'},
+{cat:'Brakes',name:'Front brake',action:'Check operation, fluid level, leakage; replace pads if necessary.',tabs:[1000,7000,13000,19000,25000,31000],diff:3,dealer:true,page:'3-14',pdf:'125',notes:'Pad replacement: Ch.4 p.4-26/4-31.'},
+{cat:'Brakes',name:'Rear brake',action:'Check operation, fluid level, leakage; replace pads if necessary.',tabs:[1000,7000,13000,19000,25000,31000],diff:3,dealer:true,page:'3-14',pdf:'125',notes:'Pad replacement: Ch.4 p.4-37/4-44.'},
+{cat:'Brakes',name:'Brake hoses — inspect',action:'Check for cracks/damage and correct routing/clamping.',tabs:[7000,13000,19000,25000,31000],diff:2,dealer:true,page:'3-15',pdf:'126'},
+{cat:'Brakes',name:'Front & rear brake switches',action:'Check operation of the brake-light switches.',tabs:[1000,7000,13000,19000,25000,31000],diff:1,dealer:true,page:'3-30',pdf:'141',notes:'Detail: Ch.8 p.8-37.'},
+{cat:'Wheels',name:'Wheels',action:'Check runout, spoke tightness, damage; tighten spokes if necessary.',tabs:[1000,7000,13000,19000,25000,31000],diff:2,dealer:true,page:'3-17',pdf:'128'},
+{cat:'Wheels',name:'Tires',action:'Check tread depth, damage, air pressure; correct/replace as needed.',tabs:[7000,13000,19000,25000,31000],diff:1,dealer:true,page:'3-17–3-18',pdf:'128–129',notes:'Cold: front 220 kPa, rear 250 kPa. Wear limit 1.0 mm.'},
+{cat:'Wheels',name:'Wheel bearings',action:'Check bearings for smooth operation; replace if necessary.',tabs:[7000,13000,19000,25000,31000],diff:3,dealer:true,page:'3-18',pdf:'129',notes:'Detail: Ch.4 p.4-13/4-21.'},
+{cat:'Wheels',name:'Swingarm pivot bearings — check',action:'Check operation and for excessive play.',tabs:[7000,13000,19000,25000,31000],diff:3,dealer:true,page:'3-19',pdf:'130'},
+{cat:'Wheels',name:'Chassis fasteners',action:'Check all chassis nuts, bolts, screws; correct if necessary.',tabs:[7000,13000,19000,25000,31000],diff:1,dealer:true,page:'3-21',pdf:'132'},
+{cat:'Suspension',name:'Front fork',action:'Check operation and for oil leakage; replace parts if necessary.',tabs:[7000,13000,19000,25000,31000],diff:3,dealer:true,page:'3-21–3-23',pdf:'132–134',notes:'Detail: Ch.4 p.4-64.'},
+{cat:'Suspension',name:'Shock absorber assembly',action:'Check operation and for oil leakage; replace if necessary.',tabs:[7000,13000,19000,25000,31000],diff:3,dealer:true,page:'3-23–3-25',pdf:'134–136',notes:'Detail: Ch.4 p.4-78.'},
+{cat:'Suspension',name:'Steering bearings — check',action:'Check bearing assemblies for looseness.',tabs:[1000,7000,13000,19000,25000,31000],diff:3,dealer:true,page:'3-20–3-21',pdf:'131–132'},
+{cat:'Controls',name:'Clutch',action:'Check operation; adjust or replace the cable.',tabs:[1000,7000,13000,19000,25000,31000],diff:2,dealer:true,page:'3-13–3-14',pdf:'124–125',notes:'Free play 5.0–10.0 mm.'},
+{cat:'Controls',name:'Brake lever pivot shaft',action:'Apply silicone grease lightly.',tabs:[7000,13000,19000,25000,31000],diff:1,dealer:false,page:'3-21',pdf:'132'},
+{cat:'Controls',name:'Brake pedal pivot shaft',action:'Apply lithium-soap grease lightly.',tabs:[7000,13000,19000,25000,31000],diff:1,dealer:false,page:'3-21',pdf:'132'},
+{cat:'Controls',name:'Clutch lever pivot shaft',action:'Apply lithium-soap grease lightly.',tabs:[7000,13000,19000,25000,31000],diff:1,dealer:false,page:'3-21',pdf:'132'},
+{cat:'Controls',name:'Shift pedal pivot shaft',action:'Apply lithium-soap grease lightly.',tabs:[7000,13000,19000,25000,31000],diff:1,dealer:false,page:'3-21',pdf:'132'},
+{cat:'Controls',name:'Sidestand pivot',action:'Check operation; apply molybdenum disulfide grease.',tabs:[7000,13000,19000,25000,31000],diff:1,dealer:false,page:'3-21',pdf:'132'},
+{cat:'Controls',name:'Sidestand switch',action:'Check operation; replace if necessary.',tabs:[1000,7000,13000,19000,25000,31000],diff:2,dealer:true,page:'3-21',pdf:'132',notes:'Detail: Ch.8 p.8-37.'},
+{cat:'Controls',name:'Control cables',action:'Lubricate with Yamaha cable lubricant.',tabs:[1000,7000,13000,19000,25000,31000],diff:2,dealer:true,page:'3-30',pdf:'141'},
+{cat:'Controls',name:'Throttle grip',action:'Check operation & free play; adjust and lubricate.',tabs:[7000,13000,19000,25000,31000],diff:2,dealer:true,page:'3-30–3-31',pdf:'141–142',notes:'Free play 3.0–5.0 mm.'},
+{cat:'Controls',name:'Lights, signals & switches',action:'Check operation; adjust headlight beam.',tabs:[1000,7000,13000,19000,25000,31000],diff:1,dealer:true,page:'3-32',pdf:'143',notes:'Detail: Ch.8 p.8-37.'},
+];
+
+const LONG_INTERVAL = [
+{name:'Valve clearance',km:42000,diff:5,page:'3-6–3-9',pdf:'117–120',notes:'Cam removal — engine-internals job.'},
+{name:'Air filter element — replace',km:19000,diff:3,page:'3-12–3-13',pdf:'123–124',notes:'Disposable paper — no compressed air. Sooner if wet/dusty.'},
+{name:'Swingarm pivot bearings — repack',km:50000,diff:4,page:'3-19',pdf:'130'},
+{name:'Steering bearings — repack',km:19000,diff:4,page:'3-21',pdf:'132',notes:'Detail: Ch.4 p.4-74.'},
+{name:'Rear suspension link pivots — lube',km:19000,diff:3,page:'3-25',pdf:'136'},
+];
+
+const CALENDAR_ONLY = [
+{name:'Brake hoses — replace',months:48,page:'3-15',pdf:'126'},
+{name:'Brake fluid — change',months:24,page:'3-15–3-16',pdf:'126–127'},
+{name:'Coolant — change',months:36,page:'3-29',pdf:'140'},
+];
+
+const TAB_VALUES = [1000,7000,13000,19000,25000,31000];
+const TAB_LABELS = {1000:'Initial',7000:'1st',13000:'2nd',19000:'3rd',25000:'4th',31000:'5th'};
+const CATS_ORDER = ['Engine','Cooling','Brakes','Wheels','Suspension','Controls'];
+let activeTab = 7000;
+
+function diffBars(d){
+  return '<span class="diffbar">'+Array.from({length:5},(_,i)=>`<span class="${i<d?'on':''}"></span>`).join('')+'</span>';
+}
+
+function renderTabs(){
+  document.getElementById('tabs').innerHTML = TAB_VALUES.map(v=>`
+    <button class="tab ${v===activeTab?'active':''}" data-v="${v}">
+      <span class="n">${v.toLocaleString()}</span><span class="l">km · ${TAB_LABELS[v]}</span>
+    </button>`).join('');
+}
+
+function renderPanel(){
+  const note = activeTab===1000
+    ? 'First service — done once, early in the bike\'s life.'
+    : activeTab===31000
+      ? 'This exact checklist also applies at 37,000 km, 43,000 km, 49,000 km… (repeats every 6,000 km from here on).'
+      : `This checklist repeats every 6,000 km from here — also applies at ${(activeTab+6000).toLocaleString()} km, ${(activeTab+12000).toLocaleString()} km, and so on.`;
+  document.getElementById('tabNote').textContent = note;
+
+  const items = ITEMS.filter(it=>it.tabs.includes(activeTab));
+  const html = CATS_ORDER.map(cat=>{
+    const rows = items.filter(it=>it.cat===cat);
+    if(!rows.length) return '';
+    return `<div class="group"><h3>${cat}</h3>${rows.map(it=>`
+      <div class="row">
+        <div class="main">
+          <div class="name">${it.name}</div>
+          <div class="action">${it.action}${it.notes?' <span style="color:var(--sand-faint)">— '+it.notes+'</span>':''}</div>
+          <div class="meta">
+            ${diffBars(it.diff)}
+            ${it.dealer?'<span class="tag-dealer">dealer-flagged</span>':''}
+          </div>
+        </div>
+        <div class="right">p.${it.page}<br>PDF ${it.pdf}</div>
+      </div>`).join('')}</div>`;
+  }).join('');
+
+  document.getElementById('tabPanel').innerHTML = html || '<p style="color:var(--sand-faint);margin-top:18px;">Nothing scheduled here.</p>';
+}
+
+function renderLong(){
+  document.getElementById('longList').innerHTML = LONG_INTERVAL.map(it=>`
+    <div class="prow">
+      <div><div class="cn">${it.name}</div><div class="ci">${it.notes||''}</div></div>
+      <div style="text-align:right">
+        <div class="ci">${diffBars(it.diff)} every ${it.km.toLocaleString()} km</div>
+        <div class="cp">p.${it.page} · PDF ${it.pdf}</div>
+      </div>
+    </div>`).join('');
+}
+function renderCal(){
+  document.getElementById('calList').innerHTML = CALENDAR_ONLY.map(c=>`
+    <div class="prow">
+      <div class="cn">${c.name}</div>
+      <div style="text-align:right">
+        <div class="ci">every ${c.months%12===0?(c.months/12)+' yr'+(c.months>12?'s':''):c.months+' mo'}</div>
+        <div class="cp">p.${c.page} · PDF ${c.pdf}</div>
+      </div>
+    </div>`).join('');
+}
+
+document.getElementById('tabs').addEventListener('click', e=>{
+  const b = e.target.closest('.tab');
+  if(!b) return;
+  activeTab = Number(b.dataset.v);
+  renderTabs(); renderPanel();
+});
+
+document.getElementById('finderInput').addEventListener('input', e=>{
+  const v = Number(e.target.value);
+  const out = document.getElementById('finderResult');
+  if(!e.target.value || isNaN(v) || v<0){ out.textContent=''; return; }
+  let matchTab;
+  if(v < 1000) matchTab = 1000;
+  else if(v < 7000) matchTab = 7000;
+  else {
+    const cycles = Math.floor((v-7000)/6000);
+    matchTab = 7000 + (cycles % 5)*6000; // maps into 7000..31000 range
+    if(matchTab>31000) matchTab = 31000;
+  }
+  out.textContent = '≈ same as the '+matchTab.toLocaleString()+' km tab';
+  activeTab = matchTab;
+  renderTabs(); renderPanel();
+});
+
+renderTabs();
+renderPanel();
+renderLong();
+renderCal();
+</script>
 </body>
 </html>
